@@ -41,6 +41,8 @@ var headLoading = $("#head-loading");
 
 var curDocument = $(document); 
 
+var mBody = $("body");
+
 //窗口宽度
 var windowWidth = parseInt($(window).width());
 
@@ -125,13 +127,13 @@ var currentImg;
 var globalImg;
 
 //因为引用了toucher.js这个库
-var containerTouch = util.toucher($("body")[0]);
+var containerTouch = util.toucher(mBody[0]);
 
 //当文档加载完成，入口方法
 $(function(){
-   addLoadMoreListener();
-   loadMoreImage();
-   addClickListener();
+    addLoadMoreListener();
+    loadMoreImage();
+    addClickListener();
 });
 
 //添加底部自动刷新
@@ -146,6 +148,11 @@ function addLoadMoreListener(){
        }
    });
 }
+
+// function isCompatible(){
+//     if(windowHeight / windowWidth < 1.5)
+//         showToast("本WebApp可能尚未适配您的屏幕尺寸",TOAST_WRONG_COLOR);
+// }
 
 function addClickListener(){
     containerTouch.on("doubleTap",".image-item",function(e){
@@ -277,7 +284,7 @@ function onImageListItemShow(object){
     var currentHeight;
     var currentTop;
     var currentLeft;
-    
+    // console.log(originalWidth+","+originalHeight+","+originalHeight/originalWidth);
     currentHeight = itemWidth / originalWidth * originalHeight;
 
     if(leftHeight <= rightHeight){
@@ -350,6 +357,7 @@ function toggleSmallestImg(smallImg,bigImg){
         globalImg.remove();
         window.scrollTo(0,firstPageScrollTop);
         $("#container").removeClass("blur");
+        mBody.css("overflow-y","auto");
         isBiggest = false;
     });
 }
@@ -359,7 +367,7 @@ function showBiggestImg(smallImg){
 
     var originalTop = reduceScrollTop(parseInt(smallImg.css("top")));
 
-    globalImg = smallImg.clone().prependTo($("body"));
+    globalImg = smallImg.clone().prependTo(mBody);
 
     var currentWidth = windowWidth;
     var currentHeight = currentWidth / globalImg.width()  * globalImg.height();
@@ -379,6 +387,7 @@ function showBiggestImg(smallImg){
     },ANIMATE_DEFAULT_TIME,"swing",function(){
         $("#container").addClass("blur");
         firstPageScrollTop = curDocument.scrollTop();
+        mBody.css("overflow-y","hidden");
     });
 }
 
